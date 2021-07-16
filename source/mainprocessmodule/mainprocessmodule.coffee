@@ -1,9 +1,4 @@
 mainprocessmodule = {name: "mainprocessmodule"}
-
-#region modulesFromEnvironment
-cfg = null
-#endregion
-
 #region logPrintFunctions
 ##############################################################################
 log = (arg) ->
@@ -13,19 +8,35 @@ olog = (o) -> log "\n" + ostr(o)
 ostr = (o) -> JSON.stringify(o, null, 4)
 print = (arg) -> console.log(arg)
 #endregion
-##############################################################################
-mainprocessmodule.initialize = () ->
-    log "mainprocessmodule.initialize"
-    cfg = allModules.configmodule
-    return 
 
-#region internalFunctions
+############################################################
+#region modulesFromEnvironment
+p = null
+recurse = null
+composition = null
 #endregion
 
+############################################################
+mainprocessmodule.initialize = ->
+    log "mainprocessmodule.initialize"
+    p = allModules.pathmodule
+    recurse = allModules.recursemodule
+    composition = allModules.compositionmodule
+    return 
+
+
+############################################################
 #region exposedFunctions
-mainprocessmodule.execute = () ->
+mainprocessmodule.execute = (e) ->
     log "mainprocessmodule.execute"
+    
+    await p.digestPath(e.path)
+
+    if e.recursive then await recurse.start()
+    else await composition.autocompose(p.root)
+
     return
+
 #endregion
 
 module.exports = mainprocessmodule
