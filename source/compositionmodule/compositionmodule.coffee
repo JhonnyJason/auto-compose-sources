@@ -26,6 +26,7 @@ compositionmodule.initialize = ->
 class Composition
     constructor: (@basePath) ->
         @outputPath = p.outputPath(@basePath)
+        @outputFileName = p.fileName(@outputPath)
         templatePath = p.compositionTemplatePath(@basePath)
         @template = fs.readFileSync(templatePath, "utf-8")
         @components = {}
@@ -55,6 +56,7 @@ class Composition
         return
 
     digestFilename: (name) ->
+        if name == @outputFileName then return
         tokens = name.split(".")
         if tokens.length == 1 then await @digestDirectory(name)
         if tokens.length == 2 then await @digestFile(tokens[0], tokens[1])
@@ -102,10 +104,10 @@ filterByName = (fileNames, name) ->
 ############################################################
 compositionmodule.autocompose = (basePath) ->
     log "compositionmodule.autocompose"
-    composition = new Composition(basePath)
+    try composition = new Composition(basePath)
+    catch err then return log err
     await composition.readComponents()
     await composition.writeResult()
-
     return
     
 module.exports = compositionmodule

@@ -9,7 +9,7 @@ debugmodule.initialize = () ->
 debugmodule.modulesToDebug = 
     unbreaker: true
     # cliargumentsmodule: true
-    compositionmodule: true
+    # compositionmodule: true
     # configmodule: true
     # mainprocessmodule: true
     # pathmodule: true

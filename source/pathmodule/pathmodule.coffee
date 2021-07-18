@@ -72,6 +72,11 @@ pathmodule.outputPath = (base) ->
 
 pathmodule.resolve = p.resolve
 
-pathmodule.extension = (lePath) -> p.extname(lePath).slice(1)
+pathmodule.extension = (lePath) -> 
+    extname = p.extname(lePath)
+    if extname.length > 1 then return extname.slice(1)
+    return ""
+
+pathmodule.fileName = (lePath) -> p.basename(lePath)
 
 module.exports = pathmodule

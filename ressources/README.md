@@ -1,30 +1,96 @@
-# noname - 
+# auto-compose 
+Small CLI tool to compose a new file out of others according to a template.
 
-# Why?
+# Background
+Witnessing that many of my source files are often composed of other files - like small code snippets which have their own origin and version control. The desire arose to have a tool for which I could simply define a template then add all those smaller code-snippets as submodules. 
 
-# What?
+So this tool would check which components are available and according to this creates the resulting file. The result is auto-compose
 
 # How?
 Requirements
 ------------
+- [nodejs](https://nodejs.org/en/)
+- [npm](https://www.npmjs.com/)
 
 Installation
 ------------
 
+Current git version
+```sh
+npm install -g git+https://github.com/JhonnyJason/auto-compose-output.git
+```
+
+Npm Registry
+```sh
+npm install -g auto-compose
+```
 
 Usage
 -----
+```
+Usage
+    $ auto-compose arg1
 
+Options
+    optional:
+
+        arg1, --path <path/to/root/dir> -p <path/to/root/dir>
+            the directory to start autocomposing
+            cwd(current working directory) is default
+        
+        --recursive, -r
+            recursive switch, if present it would recursively autocompose
+            doing so in depth-first style 
+        
+Examples
+    $  auto-compose /home/user/code/autocompose-sources/ -r
+
+```
 
 Current Functionality
 ---------------------
+- Composition Step
+    - Reads the `autocomposition.*.mustache` as the template
+    - Reads all Filenames and Directorynames available in the same basePath where the composition ste happens
+    - Those components are simply stored as: 
+        ```
+        file: ./header.coffee
+        {
+            "name": "header",
+            "coffee": "... content of the file ..."
+        }
+        ```
+    - `autocomposition.<extname>.mustache` defines which files extensions are to be considered
+    - For directories ony files like `./filename/filename.<extname>` are being considered
+    - For the case when we have the case of both `./filename/filename.<extname>` and `./filename.<extname>` being available then `./filename.<extname>` is taken as the correct file
+    - All the components are provided to the `.mustache` template as:
+        ```
+        {
+            "components": [
+                {
+                    "name": "<filename>",
+                    "<extname>": "... content of the file ..."
+                },
+                {
+                    "name": "<filename>",
+                    "<extname>": "... content of the file ..."
+                },
+                ...       
+            ]
+        }
+        ```
+    - This List of components is thought to be ordered alphabetically
+- There is a recursion mode. In this mode we navigate recursivly into the directories and apply the composition step on each, where we may find such an `autocomposition.*.mustache` file.
+    - This is done in depth-first search style - so we could have the result of a deeper autocomposition as component of the current
+
 
 
 ---
 
 # Further steps
 
-- ...
+- Find bugs
+- Figure out further steps^^
 
 
 All sorts of inputs are welcome, thanks!
