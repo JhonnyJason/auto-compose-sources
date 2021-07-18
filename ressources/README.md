@@ -49,41 +49,58 @@ Examples
 
 Current Functionality
 ---------------------
-- Composition Step
-    - Reads the `autocomposition.*.mustache` as the template
-    - Reads all Filenames and Directorynames available in the same basePath where the composition ste happens
-    - Those components are simply stored as: 
-        ```
-        file: ./header.coffee
-        {
-            "name": "header",
-            "coffee": "... content of the file ..."
-        }
-        ```
-    - `autocomposition.<extname>.mustache` defines which files extensions are to be considered
-    - For directories ony files like `./filename/filename.<extname>` are being considered
-    - For the case when we have the case of both `./filename/filename.<extname>` and `./filename.<extname>` being available then `./filename.<extname>` is taken as the correct file
-    - All the components are provided to the `.mustache` template as:
-        ```
-        {
-            "components": [
-                {
-                    "name": "<filename>",
-                    "<extname>": "... content of the file ..."
-                },
-                {
-                    "name": "<filename>",
-                    "<extname>": "... content of the file ..."
-                },
-                ...       
-            ]
-        }
-        ```
-    - This List of components is thought to be ordered alphabetically
-- There is a recursion mode. In this mode we navigate recursivly into the directories and apply the composition step on each, where we may find such an `autocomposition.*.mustache` file.
-    - This is done in depth-first search style - so we could have the result of a deeper autocomposition as component of the current
+### **Composition Step**
+- Reads the `autocomposition.*.mustache` as the template
+- Reads all Filenames and Directorynames available in the same basePath where the composition ste happens
+- Those components are simply stored as: 
+    ```
+    file: ./header.coffee
+    {
+        "name": "header",
+        "coffee": "... content of the file ..."
+    }
+    ```
+- `autocomposition.<extname>.mustache` defines which files extensions are to be considered
+- For directories ony files like `./filename/filename.<extname>` are being considered
+- For the case when we have the case of both `./filename/filename.<extname>` and `./filename.<extname>` being available then `./filename.<extname>` is taken as the correct file
+- All the components are provided to the `.mustache` template as:
+    ```
+    {
+        "components": [
+            {
+                "name": "<filename>",
+                "<extname>": "... content of the file ..."
+            },
+            {
+                "name": "<filename>",
+                "<extname>": "... content of the file ..."
+            },
+            ...       
+        ]
+    }
+    ```
+- This List of components is thought to be ordered alphabetically
 
+### Recursion Mode
 
+- There is a **Recursion Mode**. In this mode we navigate recursivly into the directories and apply the Composition Step on each level where we may find such an `autocomposition.*.mustache` file.
+- This is done in depth-first search style - so we could have the result of a deeper autocomposition as component of the current
+
+Example Template `autocomposition.coffee.mustache`
+---
+```
+#region autocomposed parts
+
+{{#components}}
+############################################################
+#region {{{name}}}.coffee
+{{{coffee}}}
+#endregion
+
+{{/components}}
+
+#endregion
+```
 
 ---
 
